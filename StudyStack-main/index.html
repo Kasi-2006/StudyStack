@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="duZfaPAf4w40SVXYrcfjHoTi6DZiOAvCxo41xQXvxTY" />
+    <title>StudyStack | AcademiaHub</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/96/graduation-cap.png">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/fluency/96/graduation-cap.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      window.addEventListener('error', function(event) {
+        var str = 'CRASH: ' + event.message + ' at ' + event.filename + ':' + event.lineno;
+        var p = document.createElement('h1');
+        p.style.color = 'red';
+        p.style.zIndex = '999999';
+        p.style.position = 'fixed';
+        p.textContent = str;
+        document.body.prepend(p);
+      });
+      window.addEventListener('unhandledrejection', function(event) {
+        var str = 'PROMISE CRASH: ' + (event.reason ? event.reason.toString() : 'Unknown');
+        var p = document.createElement('h1');
+        p.style.color = 'red';
+        p.style.zIndex = '999999';
+        p.style.position = 'fixed';
+        p.textContent = str;
+        document.body.prepend(p);
+      });
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+    <!-- Explicitly load the entry point module -->
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
