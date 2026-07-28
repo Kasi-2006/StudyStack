@@ -80,10 +80,10 @@ const Uploader: React.FC<UploaderProps> = ({ user, onBack }) => {
     setMessage(null);
 
     try {
-      setMessage({ type: 'success', text: '📤 Uploading to Supabase Storage...' });
+      setMessage({ type: 'success', text: '📤 Uploading to Google Drive...' });
       const base64File = await toBase64(file);
 
-      setMessage({ type: 'success', text: '💾 Saving to Supabase Database...' });
+      setMessage({ type: 'success', text: '💾 Saving Metadata to Supabase...' });
 
       await api.createFile({
         subject_id: selectedSubjectId,
@@ -96,7 +96,8 @@ const Uploader: React.FC<UploaderProps> = ({ user, onBack }) => {
         file_content: base64File
       });
 
-      setMessage({ type: 'success', text: '✅ Resource uploaded to Supabase successfully!' });
+      setMessage({ type: 'success', text: '✅ Resource uploaded to Google Drive successfully!' });
+
       setFile(null);
       setSelectedSubjectId('');
       setTagValue('');

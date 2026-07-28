@@ -5,7 +5,7 @@ import { Subject, AcademicFile, Category, UserProfile, Report, Announcement, Che
 import Uploader from './Uploader';
 import {
   ChevronLeft, Plus, Trash2, Loader2, RefreshCcw, Search, ShieldAlert, CheckCircle2,
-  Copy, Check, X, Database, Edit2, Eye, MoreVertical, Layers, FileText, Mail, Flag, Megaphone, Clock, AlertTriangle, Eraser, MessageSquare
+  Copy, Check, X, Database, Edit2, Eye, MoreVertical, Layers, FileText, Mail, Flag, Megaphone, Clock, AlertTriangle, Eraser, MessageSquare, Send
 } from 'lucide-react';
 
 interface AdminDashboardProps {
