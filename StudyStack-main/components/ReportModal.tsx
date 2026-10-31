@@ -38,13 +38,13 @@ const ReportModal: React.FC<ReportModalProps> = ({ user, isOpen, onClose }) => {
       <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-indigo-100 text-indigo-600 rounded-xl">
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900">Messages</h3>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900">Messages</h3>
               <p className="text-xs text-slate-500 font-medium">Updates from Admin</p>
             </div>
           </div>
@@ -57,7 +57,7 @@ const ReportModal: React.FC<ReportModalProps> = ({ user, isOpen, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/30">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 bg-slate-50/30">
           
           {/* History */}
           <div className="space-y-4">

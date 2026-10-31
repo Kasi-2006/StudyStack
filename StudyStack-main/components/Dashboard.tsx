@@ -187,34 +187,34 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onSelectView }) => {
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-5">
-          <div className="w-16 h-16 bg-white rounded-3xl shadow-xl shadow-indigo-100 flex items-center justify-center p-2 border border-slate-100 shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 sm:gap-5">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-indigo-100 flex items-center justify-center p-2 border border-slate-100 shrink-0">
             <img src="https://img.icons8.com/fluency/96/graduation-cap.png" alt="Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h2 className="text-4xl font-black text-slate-900 tracking-tight">StudyStack</h2>
-            <p className="text-slate-500 mt-1 font-medium">Academic Content Management</p>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">StudyStack</h2>
+            <p className="text-slate-500 text-xs sm:text-base mt-0.5 sm:mt-1 font-medium">Academic Content Management</p>
           </div>
         </div>
-        <div className={`flex items-center gap-3 px-4 py-2 border rounded-2xl shadow-sm ${isOnline ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-red-50 border-red-100 text-red-700'}`}>
+        <div className={`self-start sm:self-auto flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-4 py-2 border rounded-xl sm:rounded-2xl shadow-sm ${isOnline ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-red-50 border-red-100 text-red-700'}`}>
           {isOnline ? <Wifi className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
-          <span className="text-xs font-black uppercase tracking-widest">{isOnline ? 'Database Linked' : 'Database Error'}</span>
+          <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">{isOnline ? 'Database Linked' : 'Database Error'}</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {options.map((option) => (
           <button
             key={option.id}
             onClick={() => onSelectView(option.id as any)}
-            className={`group text-left p-6 rounded-[2rem] border-2 ${option.border} ${option.light} hover:shadow-2xl hover:-translate-y-2 transition-all duration-300`}
+            className={`group text-left p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] border-2 ${option.border} ${option.light} hover:shadow-2xl hover:-translate-y-2 transition-all duration-300`}
           >
-            <div className={`inline-flex p-4 rounded-2xl ${option.color} text-white shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300`}>
-              {React.cloneElement(option.icon as React.ReactElement<any>, { className: 'w-6 h-6' })}
+            <div className={`inline-flex p-3.5 sm:p-4 rounded-xl sm:rounded-2xl ${option.color} text-white shadow-lg mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300`}>
+              {React.cloneElement(option.icon as React.ReactElement<any>, { className: 'w-5 h-5 sm:w-6 sm:h-6' })}
             </div>
-            <h3 className={`text-xl font-black ${option.text} mb-2 tracking-tight`}>{option.title}</h3>
-            <p className="text-slate-600 text-xs leading-relaxed mb-6 font-medium">{option.description}</p>
+            <h3 className={`text-lg sm:text-xl font-black ${option.text} mb-1 sm:mb-2 tracking-tight`}>{option.title}</h3>
+            <p className="text-slate-600 text-xs leading-relaxed mb-4 sm:mb-6 font-medium">{option.description}</p>
             <div className={`flex items-center gap-1 text-[10px] font-black uppercase tracking-wider ${option.text}`}>
               Open Library <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>
@@ -222,10 +222,10 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onSelectView }) => {
         ))}
       </div>
 
-      <div className="flex justify-center gap-4 mt-6">
+      <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-6">
         <button
           onClick={() => setShowMessages(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-2xl text-xs font-black uppercase tracking-widest border border-indigo-100 transition-all relative"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-xl sm:rounded-2xl text-xs font-black uppercase tracking-widest border border-indigo-100 transition-all relative"
         >
           <Mail className="w-4 h-4" /> 
           Messages
@@ -235,18 +235,18 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onSelectView }) => {
         </button>
         <button
           onClick={() => setShowReportModal(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-red-50 text-red-500 hover:bg-red-100 rounded-2xl text-xs font-black uppercase tracking-widest border border-red-100 transition-all"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl sm:rounded-2xl text-xs font-black uppercase tracking-widest border border-red-100 transition-all"
         >
           <Flag className="w-4 h-4" /> Report Problem
         </button>
       </div>
 
       {/* Stats */}
-      <div className="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-xl mt-8">
-        <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
-          <RefreshCw className="w-6 h-6 text-indigo-500" /> System Stats
+      <div className="bg-white p-5 sm:p-10 rounded-2xl sm:rounded-[2.5rem] border border-slate-200 shadow-xl mt-6 sm:mt-8">
+        <h3 className="text-lg sm:text-xl font-black text-slate-900 mb-6 sm:mb-8 flex items-center gap-3">
+          <RefreshCw className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-500" /> System Stats
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
           <StatBox label="Modules" value={stats.subjects} loading={stats.loading} />
           <StatBox label="Files" value={stats.files} loading={stats.loading} />
           <StatBox label="Checkouts" value={stats.checkouts} loading={stats.loading} highlight />

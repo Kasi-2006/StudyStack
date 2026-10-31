@@ -175,28 +175,28 @@ const App: React.FC = () => {
           )}
 
           {/* Navigation */}
-          <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+          <nav className="bg-white/80 backdrop-blur-md border-b border-slate-200 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
             <div
-              className="flex items-center gap-4 cursor-pointer group"
+              className="flex items-center gap-2 sm:gap-4 cursor-pointer group"
               onClick={() => setCurrentView('home')}
               title="Go to Home"
             >
-              <div className="w-12 h-12 bg-white rounded-2xl shadow-xl shadow-indigo-100/50 flex items-center justify-center p-1 border border-slate-100 group-hover:scale-110 group-hover:shadow-indigo-200/50 transition-all duration-300 overflow-hidden">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 bg-white rounded-xl sm:rounded-2xl shadow-xl shadow-indigo-100/50 flex items-center justify-center p-1 border border-slate-100 group-hover:scale-110 group-hover:shadow-indigo-200/50 transition-all duration-300 overflow-hidden shrink-0">
                 <img
                   src="https://img.icons8.com/fluency/96/graduation-cap.png"
                   alt="StudyStack Logo"
-                  className="w-10 h-10 object-contain"
+                  className="w-7 h-7 sm:w-10 sm:h-10 object-contain"
                 />
               </div>
               <div>
-                <h1 className="text-xl font-black tracking-tight text-slate-900 leading-none">StudyStack</h1>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
+                <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 leading-none">StudyStack</h1>
+                <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 sm:mt-1 truncate max-w-[120px] sm:max-w-none">
                   {user.role === 'Admin' ? 'Management Active' : 'Student Portal'}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 sm:gap-5">
+            <div className="flex items-center gap-2 sm:gap-5">
               <div className="hidden sm:flex flex-col items-end">
                 <span className="text-sm font-bold text-slate-800">{user.username}</span>
                 <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${user.role === 'Admin' ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
@@ -204,14 +204,14 @@ const App: React.FC = () => {
                 </span>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {user.role === 'Admin' && (
                   <button
                     onClick={() => setCurrentView('admin')}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${currentView === 'admin' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'}`}
+                    className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all ${currentView === 'admin' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 hover:bg-slate-100'}`}
                   >
                     <ShieldCheck className="w-4 h-4" />
-                    Console
+                    <span className="hidden xs:inline">Console</span>
                   </button>
                 )}
                 <button
@@ -233,7 +233,7 @@ const App: React.FC = () => {
           </nav>
 
           {/* Main Content Area */}
-          <main className="flex-1 max-w-7xl mx-auto w-full p-6 pb-20">
+          <main className="flex-1 max-w-7xl mx-auto w-full p-3 sm:p-6 pb-20">
             {user && currentView !== 'admin' && <GlobalSearch />}
             {renderContent()}
           </main>
@@ -244,8 +244,9 @@ const App: React.FC = () => {
         </>
       )}
 
-      {/* Alex Bot - Available for every user */}
-      <Chatbot />
+      {/* Alex Bot - Available ONLY for authenticated users (Student or Admin) */}
+      {user && (user.role === 'User' || user.role === 'Admin') && <Chatbot />}
+
       
       {user && (
         <ReportModal

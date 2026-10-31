@@ -1,4 +1,3 @@
-
 /**
  * api.ts — Full Supabase API Layer
  * All database operations go directly through Supabase (PostgreSQL + Storage).
@@ -15,6 +14,7 @@ import {
   signInWithPopup
 } from "firebase/auth";
 import { supabase } from './supabaseClient';
+import { hybridSearch } from './searchEngine';
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -159,37 +159,62 @@ export const api = {
   },
 
   /**
-   * createFile — uploads file to Google Drive via backend API, then saves metadata to Supabase 'files' table.
-   * Features atomic consistency: if metadata save fails, Google Drive file is deleted automatically.
+   * createFile — uploads PDF to Supabase Storage, then saves metadata to 'files' table.
+   * Expects fileData.file_content = base64 data URL (data:application/pdf;base64,...)
    */
   createFile: async (fileData: any) => {
-    const response = await fetch('/api/drive/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(fileData)
-    });
+    const { file_content, ...meta } = fileData;
+    let file_url = meta.file_url || '';
 
-    const resData = await response.json();
-    if (!response.ok) {
-      throw new Error(resData.error || 'Failed to upload file to Google Drive');
+    if (file_content) {
+      // Detect MIME type from data URL header: "data:image/jpeg;base64,..."
+      const mimeMatch = file_content.match(/^data:([^;]+);base64,/);
+      const mimeType = mimeMatch ? mimeMatch[1] : 'application/pdf';
+
+      // Pick the right file extension
+      const extMap: Record<string, string> = {
+        'application/pdf': 'pdf',
+        'image/jpeg': 'jpg',
+        'image/jpg': 'jpg',
+        'image/png': 'png'
+      };
+      const ext = extMap[mimeType] || 'pdf';
+
+      // Strip the data URL prefix to get raw base64
+      const base64 = file_content.split(',')[1];
+      const byteArray = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+      const blob = new Blob([byteArray], { type: mimeType });
+
+      const fileName = `${Date.now()}_${(meta.file_name || 'file').replace(/\s+/g, '_')}.${ext}`;
+      const storagePath = `files/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('academic-files')
+        .upload(storagePath, blob, {
+          contentType: mimeType,
+          upsert: false
+        });
+
+      if (uploadError) throw new Error(`Storage upload failed: ${uploadError.message}`);
+
+      const { data: urlData } = supabase.storage
+        .from('academic-files')
+        .getPublicUrl(storagePath);
+
+      file_url = urlData.publicUrl;
     }
-    return resData.data;
+
+    const { data, error } = await supabase
+      .from('files')
+      .insert([{ ...meta, file_url }])
+      .select()
+      .single();
+
+    if (error) throw new Error(error.message);
+    return data;
   },
 
   updateFile: async (id: string, updateData: any) => {
-    if (updateData.file_content) {
-      const response = await fetch(`/api/drive/file/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
-      });
-      const resData = await response.json();
-      if (!response.ok) {
-        throw new Error(resData.error || 'Failed to update file in Google Drive');
-      }
-      return resData.data;
-    }
-
     const { data, error } = await supabase
       .from('files')
       .update(updateData)
@@ -201,19 +226,32 @@ export const api = {
   },
 
   deleteFile: async (id: string) => {
-    const response = await fetch(`/api/drive/file/${id}`, {
-      method: 'DELETE'
-    });
+    // First get file URL to also delete from storage if it's a Supabase storage URL
+    const { data: fileRecord } = await supabase
+      .from('files')
+      .select('file_url, file_name')
+      .eq('id', id)
+      .single();
 
-    const resData = await response.json();
-    if (!response.ok) {
-      // Fallback: delete record directly from Supabase if backend drive deletion fails
-      const { error } = await supabase.from('files').delete().eq('id', id);
-      if (error) throw new Error(resData.error || error.message);
+    if (fileRecord?.file_url?.includes('academic-files')) {
+      try {
+        // Extract storage path from public URL
+        const url = new URL(fileRecord.file_url);
+        const storagePath = url.pathname.split('/object/public/academic-files/')[1];
+        if (storagePath) {
+          await supabase.storage.from('academic-files').remove([storagePath]);
+        }
+      } catch (_) { /* ignore storage cleanup errors */ }
     }
+
+    const { error } = await supabase
+      .from('files')
+      .delete()
+      .eq('id', id);
+    if (error) throw new Error(error.message);
   },
 
-  /** getFileContent — returns the Google Drive shareable URL for a stored file */
+  /** getFileContent — returns the public URL for a stored file */
   getFileContent: async (id: string) => {
     const { data, error } = await supabase
       .from('files')
@@ -226,7 +264,6 @@ export const api = {
       name: data.file_name
     };
   },
-
 
   // ── REPORTS ─────────────────────────────────────────────────────────────────
 
@@ -371,44 +408,25 @@ export const api = {
   searchFiles: async (query: string) => {
     if (!query.trim()) return { subjects: [], files: [] };
 
-    const [{ data: subjects }, { data: files }] = await Promise.all([
+    const searchResult = await hybridSearch(query);
+
+    const [{ data: subjects }] = await Promise.all([
       supabase
         .from('subjects')
         .select('*')
-        .ilike('name', `%${query}%`),
-      supabase
-        .from('files')
-        .select('*')
-        .or(`file_name.ilike.%${query}%,student_name.ilike.%${query}%`)
+        .ilike('name', `%${query}%`)
     ]);
 
     return {
       subjects: subjects || [],
-      files: files || []
+      files: searchResult.files || []
     };
   },
 
-  searchLibrary: async (subjectName: string, category: string, unitNo?: string) => {
-    // Find subject by name and category
-    const { data: subjects } = await supabase
-      .from('subjects')
-      .select('id')
-      .eq('name', subjectName)
-      .eq('category', category)
-      .limit(1);
-
-    if (!subjects || subjects.length === 0) return [];
-
-    let query = supabase
-      .from('files')
-      .select('*')
-      .eq('subject_id', subjects[0].id)
-      .eq('category', category);
-
-    if (unitNo) query = query.eq('unit_no', unitNo);
-
-    const { data } = await query;
-    return data || [];
+  searchLibrary: async (subjectName: string, category: string, unitNo?: string, rawQuery?: string) => {
+    const queryToUse = rawQuery || `${subjectName} ${category} ${unitNo || ''}`;
+    const result = await hybridSearch(queryToUse, subjectName, category, unitNo);
+    return result.files || [];
   },
 
   // ── STATS ───────────────────────────────────────────────────────────────────
@@ -472,7 +490,6 @@ export const api = {
       console.warn('Profiles table not found, extracting users from all activities');
       
       // Fallback: extract unique users from multiple sources
-      // Wrap each in try-catch to handle missing tables gracefully
       const fetchReports = async () => { try { return await api.getReports(); } catch { return []; } };
       const fetchFiles = async () => { try { return await api.getFiles(); } catch { return []; } };
 
@@ -483,9 +500,7 @@ export const api = {
       
       const userMap = new Map();
       
-      // Extract from Reports (has user_id)
       reps.forEach((r: any) => {
-        // Prioritize user_id as the unique key
         const id = r.user_id;
         if (id && !userMap.has(id)) {
           userMap.set(id, { 
@@ -497,7 +512,6 @@ export const api = {
         }
       });
       
-      // Extract from Files (might have user_id or use email as fallback)
       fs.forEach((f: any) => {
         const id = f.user_id || f.user_email;
         if (id && !userMap.has(id)) {

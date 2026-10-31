@@ -82,31 +82,31 @@ const StudentLogin: React.FC<StudentLoginProps> = ({ onJoin, onAdminRequest }) =
 
   return (
     <div className="w-full max-w-md">
-      <div className="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20 animate-in fade-in zoom-in-95 duration-500 relative overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-xl p-5 sm:p-8 rounded-2xl sm:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/20 animate-in fade-in zoom-in-95 duration-500 relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="text-center mb-8 relative z-10">
+        <div className="text-center mb-6 sm:mb-8 relative z-10">
           <div 
             onClick={onAdminRequest}
-            className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl text-white mb-4 shadow-xl shadow-indigo-200 hover:scale-110 active:scale-95 transition-all cursor-pointer group"
+            className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl sm:rounded-3xl text-white mb-3 sm:mb-4 shadow-xl shadow-indigo-200 hover:scale-110 active:scale-95 transition-all cursor-pointer group"
           >
-            <GraduationCap className="w-8 h-8 transition-transform group-hover:rotate-12" />
+            <GraduationCap className="w-7 h-7 sm:w-8 sm:h-8 transition-transform group-hover:rotate-12" />
           </div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-2">
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight mb-1 sm:mb-2">
             {isSignUp ? 'Create Account' : 'Welcome Back'}
           </h2>
-          <p className="text-slate-500 font-medium">
+          <p className="text-slate-500 text-xs sm:text-sm font-medium">
             {isSignUp ? 'Join the future of academic learning' : 'Alex is waiting to help you today'}
           </p>
         </div>
 
-        <div className="space-y-6 relative z-10">
+        <div className="space-y-5 sm:space-y-6 relative z-10">
           {/* Main Action Area */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
-              <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-4 duration-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 animate-in slide-in-from-top-4 duration-300">
                 <div className="space-y-1.5">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
                   <div className="relative">

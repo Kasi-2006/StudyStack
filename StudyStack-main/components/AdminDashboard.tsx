@@ -411,11 +411,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
         </div>
       )}
 
-      <div className="flex items-center justify-between bg-white px-6 py-5 rounded-lg border border-slate-200 shadow-sm">
-        <div className="flex items-center gap-4">
-          <button onClick={onBack} className="p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg transition-colors"><ChevronLeft className="w-5 h-5" /></button>
-          <div className="h-6 w-px bg-slate-200"></div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight">Admin Dashboard</h2>
+      <div className="flex items-center justify-between bg-white px-4 py-3.5 sm:px-6 sm:py-5 rounded-lg border border-slate-200 shadow-sm">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button onClick={onBack} className="p-1.5 sm:p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 rounded-lg transition-colors"><ChevronLeft className="w-5 h-5" /></button>
+          <div className="h-5 sm:h-6 w-px bg-slate-200"></div>
+          <h2 className="text-base sm:text-xl font-bold text-slate-900 tracking-tight">Admin Dashboard</h2>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => fetchData()} className="p-2 text-slate-400 hover:bg-slate-100 hover:text-indigo-600 rounded-lg transition-all">
@@ -425,21 +425,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
       </div>
 
       {/* Broadcast Center (Always Visible) */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5 animate-in fade-in slide-in-from-top-4 duration-500 mb-6 font-sans">
-        <div className="flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4 sm:space-y-5 animate-in fade-in slide-in-from-top-4 duration-500 mb-6 font-sans">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-red-50 rounded-lg text-red-600">
+            <div className="p-2 bg-red-50 rounded-lg text-red-600 shrink-0">
               <Megaphone className="w-5 h-5 transition-transform hover:scale-110" />
             </div>
             <div>
-              <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest">Broadcast Center</h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Send announcements to all users</p>
+              <h3 className="text-xs sm:text-sm font-black text-slate-800 uppercase tracking-widest">Broadcast Center</h3>
+              <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider">Send announcements to all users</p>
             </div>
           </div>
           {activeAnnouncement && (
             <button
               onClick={handleClearAnnouncement}
-              className="flex items-center gap-2 text-red-600 hover:text-red-700 font-black text-[10px] uppercase tracking-widest bg-red-50 px-4 py-2 rounded-lg border border-red-100 transition-all hover:bg-red-100/50 hover:shadow-md active:scale-95"
+              className="flex items-center gap-1.5 text-red-600 hover:text-red-700 font-black text-[9px] sm:text-[10px] uppercase tracking-widest bg-red-50 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg border border-red-100 transition-all hover:bg-red-100/50 hover:shadow-md active:scale-95 ml-auto sm:ml-0"
             >
               <Eraser className="w-3.5 h-3.5" />
               Clear Broadcast
@@ -447,13 +447,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
           )}
         </div>
 
-        <form onSubmit={handlePostAnnouncement} className="flex flex-col md:flex-row gap-3">
+        <form onSubmit={handlePostAnnouncement} className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative group">
             <input
               value={announcementMsg}
               onChange={(e) => setAnnouncementMsg(e.target.value)}
               placeholder="Type your announcement here..."
-              className="w-full pl-5 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 outline-none focus:border-red-400 focus:bg-white transition-all shadow-inner placeholder:text-slate-300"
+              className="w-full pl-4 sm:pl-5 pr-4 py-3 sm:py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-700 outline-none focus:border-red-400 focus:bg-white transition-all shadow-inner placeholder:text-slate-300"
             />
             {activeAnnouncement && (
                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
@@ -468,7 +468,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
           <button
             type="submit"
             disabled={!announcementMsg.trim() || isProcessing}
-            className="px-8 py-3.5 bg-red-600 text-white font-black text-xs uppercase tracking-[0.15em] rounded-xl hover:bg-red-700 transition-all shadow-lg hover:shadow-red-200 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95"
+            className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 bg-red-600 text-white font-black text-xs uppercase tracking-[0.15em] rounded-xl hover:bg-red-700 transition-all shadow-lg hover:shadow-red-200 flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95"
           >
             {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
             Broadcast
@@ -481,7 +481,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Recent Broadcasts</p>
                <button onClick={() => setActiveTab('logs' as any)} className="text-[9px] font-bold text-indigo-500 hover:text-indigo-700 uppercase tracking-widest">View Activity</button>
              </div>
-             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
+             <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar snap-x">
                 {allAnnouncements.slice(0, 5).map(ann => (
                   <div key={ann.id} className={`flex-shrink-0 snap-start px-4 py-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-4 ${ann.is_active ? 'bg-red-50 border-red-100 text-red-700 ring-4 ring-red-50' : 'bg-slate-50 border-slate-100 text-slate-500 hover:border-slate-200'}`}>
                     <span className="max-w-[180px] truncate">{ann.message}</span>
@@ -506,19 +506,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
         )}
       </div>
 
-      <div className="flex gap-1 p-1 bg-white border border-slate-200 rounded-lg w-fit shadow-sm">
+      {/* Responsive Scrollable Admin Tabs */}
+      <div className="w-full overflow-x-auto custom-scrollbar flex gap-1 p-1 bg-white border border-slate-200 rounded-lg shadow-sm mb-6">
         {['subjects', 'files', 'upload', 'reports', 'users', 'logs'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab as any)}
-            className={`px-5 py-2.5 rounded-md text-sm font-bold capitalize transition-all ${activeTab === tab ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
+            className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-md text-xs sm:text-sm font-bold capitalize transition-all shrink-0 whitespace-nowrap ${activeTab === tab ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
           >
             {tab === 'logs' ? 'History' : tab}
           </button>
         ))}
       </div>
 
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-6 min-h-[500px]">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-4 sm:p-6 min-h-[500px] w-full">
         {activeTab === 'upload' ? (
           <Uploader user={user} onBack={() => setActiveTab('subjects')} />
         ) : activeTab === 'subjects' ? (
@@ -534,44 +535,44 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
                 setSelectedCategories([]);
                 fetchData();
               } catch (err) { console.error(err); } finally { setIsProcessing(false); }
-            }} className="flex flex-col gap-5 bg-slate-50 p-6 rounded-xl border border-slate-200">
+            }} className="flex flex-col gap-4 sm:gap-5 bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200">
               <div className="flex items-center gap-2 mb-1">
                 <Plus className="w-4 h-4 text-indigo-500" />
-                <h4 className="text-sm font-bold text-slate-700 uppercase tracking-wider">Quick Create Subject</h4>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-700 uppercase tracking-wider">Quick Create Subject</h4>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-0.5">Subject Name</label>
-                  <input value={newSubjectName} onChange={e => setNewSubjectName(e.target.value)} placeholder="e.g. Computer Networks" className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg font-bold text-slate-800 outline-none focus:border-indigo-400 transition-colors shadow-sm" />
+                  <input value={newSubjectName} onChange={e => setNewSubjectName(e.target.value)} placeholder="e.g. Computer Networks" className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-white border border-slate-200 rounded-lg font-bold text-xs sm:text-sm text-slate-800 outline-none focus:border-indigo-400 transition-colors shadow-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-0.5">Categories (Multi)</label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {(['Assignments', 'Notes', 'Lab Resources', 'Previous Year Question Papers'] as Category[]).map(cat => {
                       const isSelected = selectedCategories.includes(cat);
                       const labels: Record<string, string> = { 'Assignments': 'Assign', 'Notes': 'Notes', 'Lab Resources': 'Labs', 'Previous Year Question Papers': 'PYQs' };
                       return (
-                        <button type="button" key={cat} onClick={() => isSelected ? setSelectedCategories(selectedCategories.filter(c => c !== cat)) : setSelectedCategories([...selectedCategories, cat])} className={`px-3 py-1.5 rounded-md border text-[10px] font-black uppercase transition-all ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-400 hover:border-slate-300'}`}>{labels[cat]}</button>
+                        <button type="button" key={cat} onClick={() => isSelected ? setSelectedCategories(selectedCategories.filter(c => c !== cat)) : setSelectedCategories([...selectedCategories, cat])} className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md border text-[10px] font-black uppercase transition-all ${isSelected ? 'bg-indigo-600 border-indigo-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-400 hover:border-slate-300'}`}>{labels[cat]}</button>
                       );
                     })}
                   </div>
                 </div>
               </div>
-              <button disabled={isProcessing} className="bg-indigo-600 text-white py-3.5 rounded-lg font-bold text-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50">
+              <button disabled={isProcessing} className="w-full bg-indigo-600 text-white py-3 sm:py-3.5 rounded-lg font-bold text-xs sm:text-sm hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50">
                 {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                 Add Subject to Selected Categories
               </button>
             </form>
-            <div className="space-y-10 mt-8">
+            <div className="space-y-8 sm:space-y-10 mt-6 sm:mt-8">
               {Object.entries(subjects.reduce((acc, sub) => { const name = sub.name || 'Unknown'; if (!acc[name]) acc[name] = []; acc[name].push(sub); return acc; }, {} as Record<string, Subject[]>)).sort(([a], [b]) => a.localeCompare(b)).map(([name, group]) => (
                 <div key={name} className="group">
-                  <div className="flex items-center gap-3 mb-4 border-b border-slate-100 pb-2 transition-colors group-hover:border-indigo-100">
+                  <div className="flex items-center gap-3 mb-3 sm:mb-4 border-b border-slate-100 pb-2 transition-colors group-hover:border-indigo-100">
                     <Layers className="w-4 h-4 text-slate-300 group-hover:text-indigo-400" />
-                    <h3 className="text-base font-bold text-slate-800 tracking-tight">{name}</h3>
+                    <h3 className="text-sm sm:text-base font-bold text-slate-800 tracking-tight">{name}</h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {(group as Subject[]).map(sub => (
-                      <div key={sub.id} className="p-3.5 bg-white rounded-lg border border-slate-100 flex justify-between items-center hover:border-indigo-200 hover:shadow-sm transition-all group/card">
+                      <div key={sub.id} className="p-3 sm:p-3.5 bg-white rounded-lg border border-slate-100 flex justify-between items-center hover:border-indigo-200 hover:shadow-sm transition-all group/card">
                         <div className="overflow-hidden"><span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${getCategoryColor(sub.category)}`}>{sub.category === 'Previous Year Question Papers' ? 'PYQ' : sub.category}</span></div>
                         <ActionMenu item={sub} type="subject" />
                       </div>
@@ -582,13 +583,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
             </div>
           </div>
         ) : activeTab === 'files' ? (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <table className="w-full min-w-[500px] text-left">
               <thead><tr className="border-b border-slate-100 text-[10px] text-slate-400 font-black tracking-widest"><th className="pb-4">FILE</th><th className="pb-4">CATEGORY</th><th className="pb-4">STUDENT</th><th className="pb-4 text-right">ACTIONS</th></tr></thead>
               <tbody>
                 {files.map(f => (
                   <tr key={f.id} className="group border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 font-bold text-sm text-slate-700">{f.file_name}</td>
+                    <td className="py-4 font-bold text-xs sm:text-sm text-slate-700">{f.file_name}</td>
                     <td className="py-4"><span className={`text-[9px] px-2 py-0.5 rounded font-black uppercase ${getCategoryColor(f.category)}`}>{f.category}</span></td>
                     <td className="py-4 text-[10px] font-bold text-slate-400 uppercase tracking-tight">{f.student_name}</td>
                     <td className="py-4 text-right"><ActionMenu item={f} type="file" /></td>
@@ -598,19 +599,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
             </table>
           </div>
         ) : activeTab === 'logs' ? (
-          <div className="overflow-x-auto">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2"><Clock className="w-5 h-5 text-indigo-500" /> Checkout History</h3>
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+              <h3 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2"><Clock className="w-5 h-5 text-indigo-500" /> Checkout History</h3>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Activity</span>
             </div>
-            <table className="w-full text-left">
+            <table className="w-full min-w-[550px] text-left">
               <thead><tr className="border-b border-slate-100 text-[10px] text-slate-400 font-black tracking-widest"><th className="pb-4">RESOURCE</th><th className="pb-4">BY</th><th className="pb-4">TIMESTAMP</th><th className="pb-4 text-right">ACTIONS</th></tr></thead>
               <tbody>
                 {checkouts.map(log => (
                   <tr key={log.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4"><div className="flex flex-col"><span className="font-bold text-slate-700 text-sm">{log.file_name}</span><span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{log.category}</span></div></td>
+                    <td className="py-4"><div className="flex flex-col"><span className="font-bold text-slate-700 text-xs sm:text-sm">{log.file_name}</span><span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{log.category}</span></div></td>
                     <td className="py-4"><span className="px-2 py-0.5 bg-slate-100 rounded text-[9px] font-black text-slate-500 uppercase">{log.user_role}</span></td>
-                    <td className="py-4 text-[11px] font-medium text-slate-400">{new Date(log.timestamp).toLocaleString()}</td>
+                    <td className="py-4 text-[10px] sm:text-[11px] font-medium text-slate-400">{new Date(log.timestamp).toLocaleString()}</td>
                     <td className="py-4 text-right"><button onClick={async () => { await api.deleteCheckout(log.id); fetchData(); }} className="p-2 text-slate-200 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button></td>
                   </tr>
                 ))}
@@ -618,17 +619,17 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
             </table>
           </div>
         ) : activeTab === 'users' ? (
-          <div className="overflow-x-auto">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2"><Mail className="w-5 h-5 text-indigo-500" /> User Directory</h3>
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+              <h3 className="text-base sm:text-lg font-bold text-slate-800 flex items-center gap-2"><Mail className="w-5 h-5 text-indigo-500" /> User Directory</h3>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Message specific users</p>
             </div>
-            <table className="w-full text-left">
+            <table className="w-full min-w-[500px] text-left">
               <thead><tr className="border-b border-slate-100 text-[10px] text-slate-400 font-black tracking-widest"><th className="pb-4">USERNAME</th><th className="pb-4">EMAIL</th><th className="pb-4">ROLE</th><th className="pb-4 text-right">ACTIONS</th></tr></thead>
               <tbody>
                 {users.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-20 text-center">
+                    <td colSpan={4} className="py-16 sm:py-20 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <div className="p-4 bg-slate-50 rounded-full text-slate-300">
                           <Search className="w-8 h-8" />
@@ -641,8 +642,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
                 ) : (
                   users.map(u => (
                     <tr key={u.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                      <td className="py-4 font-bold text-sm text-slate-700">{u.username}</td>
-                      <td className="py-4 text-sm text-slate-500">{u.email || 'N/A'}</td>
+                      <td className="py-4 font-bold text-xs sm:text-sm text-slate-700">{u.username}</td>
+                      <td className="py-4 text-xs sm:text-sm text-slate-500">{u.email || 'N/A'}</td>
                       <td className="py-4"><span className={`text-[9px] px-2 py-0.5 rounded font-black uppercase ${u.role === 'Admin' ? 'bg-amber-50 text-amber-600' : 'bg-indigo-50 text-indigo-600'}`}>{u.role}</span></td>
                       <td className="py-4 text-right">
                         <button 
@@ -660,14 +661,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onBack }) => {
             </table>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div className="w-full overflow-x-auto custom-scrollbar">
+            <table className="w-full min-w-[500px] text-left">
               <thead><tr className="border-b border-slate-100 text-[10px] text-slate-400 font-black tracking-widest"><th className="pb-4">STATUS</th><th className="pb-4">ISSUE</th><th className="pb-4">BY</th><th className="pb-4 text-right">ACTIONS</th></tr></thead>
               <tbody>
                 {reports.map(r => (
                   <tr key={r.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                     <td className="py-4"><span className={`text-[9px] px-2 py-0.5 rounded font-black uppercase ${r.status === 'Resolved' || r.status === 'Replied' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>{r.status}</span></td>
-                    <td className="py-4 font-medium text-sm text-slate-700">
+                    <td className="py-4 font-medium text-xs sm:text-sm text-slate-700">
                       <div>{r.description}</div>
                       {r.reply && <div className="mt-2 text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100"><span className="font-bold text-indigo-600 uppercase text-[9px] mr-2">Reply:</span>{r.reply}</div>}
                     </td>

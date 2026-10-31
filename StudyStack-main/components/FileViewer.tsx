@@ -4,7 +4,7 @@ import { Subject, AcademicFile, Category, UserProfile, COURSES, SEMESTERS, Cours
 import { api } from '../services/api';
 import {
   ChevronLeft, Download, FileText, Search, Loader2,
-  CheckCircle, AlertCircle, Eye, X, Layers, History, ExternalLink, Star
+  CheckCircle, AlertCircle, Eye, X, Layers, History, ExternalLink, Star, Link as LinkIcon
 } from 'lucide-react';
 
 interface FileViewerProps {
@@ -15,6 +15,23 @@ interface FileViewerProps {
 
 const UNITS = ['All Units', 'Unit 1', 'Unit 2', 'Unit 3', 'Unit 4', 'Unit 5'];
 const EXAM_TYPES = ['Mid', 'Sem'];
+
+const isGoogleDriveUrl = (url?: string) => {
+  if (!url) return false;
+  return url.includes('drive.google.com') || url.includes('docs.google.com');
+};
+
+const getDriveEmbedUrl = (url: string) => {
+  const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileMatch && fileMatch[1]) {
+    return `https://drive.google.com/file/d/${fileMatch[1]}/preview`;
+  }
+  const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (idMatch && idMatch[1]) {
+    return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
+  }
+  return url;
+};
 
 const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -129,6 +146,12 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
     setActionStatus({ id: file.id, type: 'download' });
     await logActivity(file, 'Download');
 
+    if (isGoogleDriveUrl(file.file_url)) {
+      window.open(file.file_url, '_blank');
+      setTimeout(() => setActionStatus(null), 1500);
+      return;
+    }
+
     try {
       let blobUrl;
       let name = file.file_name;
@@ -180,6 +203,13 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
   const handleView = async (file: AcademicFile) => {
     setFetchingFiles(true);
     try {
+      if (isGoogleDriveUrl(file.file_url)) {
+        setResolvedFileUrl(getDriveEmbedUrl(file.file_url));
+        setViewingFile(file);
+        await logActivity(file, 'View');
+        return;
+      }
+
       if (file.file_url === 'db') {
         const { content } = await api.getFileContent(file.id);
 
@@ -281,10 +311,12 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
                     key={resolvedFileUrl}
                     src={resolvedFileUrl?.startsWith('blob:')
                       ? `${resolvedFileUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`
+                      : (isGoogleDriveUrl(resolvedFileUrl || '') || resolvedFileUrl?.includes('/preview'))
+                      ? (resolvedFileUrl || '')
                       : `https://docs.google.com/gview?url=${encodeURIComponent(resolvedFileUrl || '')}&embedded=true`
                     }
                     className="w-full h-full border-none relative z-10 bg-white"
-                    title="PDF Viewer"
+                    title="Document Viewer"
                   />
                 </>
               )}
@@ -356,18 +388,18 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
         </div>
       )}
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <button
           onClick={onBack}
-          className="p-3 bg-white hover:bg-slate-50 rounded-2xl transition-all border border-slate-200 shadow-sm"
+          className="p-2.5 sm:p-3 bg-white hover:bg-slate-50 rounded-xl sm:rounded-2xl transition-all border border-slate-200 shadow-sm shrink-0"
         >
-          <ChevronLeft className="w-6 h-6 text-slate-600" />
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600" />
         </button>
         <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+          <h2 className="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">
             {isPYQ ? 'Previous Papers' : category} Library
           </h2>
-          <p className="text-slate-500 text-sm font-medium">Browse academic resources</p>
+          <p className="text-slate-500 text-xs sm:text-sm font-medium">Browse academic resources</p>
         </div>
       </div>
 
@@ -378,12 +410,12 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Filters */}
 
         {/* Subject Selection */}
-        <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-lg">
-          <label htmlFor="subject-select" className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-slate-200 shadow-lg">
+          <label htmlFor="subject-select" className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 sm:mb-3 ml-1">
             Academic Subject
           </label>
           <div className="relative">
@@ -391,23 +423,23 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
               id="subject-select"
               value={selectedSubjectId}
               onChange={(e) => setSelectedSubjectId(e.target.value)}
-              className="w-full pl-6 pr-12 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:outline-none focus:border-indigo-500 transition-all appearance-none text-slate-800 font-black"
+              className="w-full pl-4 sm:pl-6 pr-10 sm:pr-12 py-3 sm:py-4 bg-slate-50 border-2 border-slate-100 rounded-xl sm:rounded-2xl focus:outline-none focus:border-indigo-500 transition-all appearance-none text-slate-800 font-black text-xs sm:text-base"
             >
               <option value="">-- Choose Module --</option>
               {subjects.map((s) => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
             </select>
-            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-              <Search className="w-5 h-5 text-slate-300" />
+            <div className="absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300" />
             </div>
           </div>
         </div>
 
         {/* Tag Selection (Unit or Exam Type) */}
         {(isUnitApplicable || isPYQ) && selectedSubjectId && (
-          <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-lg animate-in slide-in-from-right-4 duration-300">
-            <label htmlFor="tag-select" className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-slate-200 shadow-lg animate-in slide-in-from-right-4 duration-300">
+            <label htmlFor="tag-select" className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 sm:mb-3 ml-1">
               {isPYQ ? 'Exam Type' : 'Select Unit / Module'}
             </label>
             <div className="relative">
@@ -415,7 +447,7 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
                 id="tag-select"
                 value={selectedTag}
                 onChange={(e) => setSelectedTag(e.target.value)}
-                className="w-full pl-6 pr-12 py-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl focus:outline-none focus:border-indigo-500 transition-all appearance-none text-indigo-900 font-black"
+                className="w-full pl-4 sm:pl-6 pr-10 sm:pr-12 py-3 sm:py-4 bg-indigo-50 border-2 border-indigo-100 rounded-xl sm:rounded-2xl focus:outline-none focus:border-indigo-500 transition-all appearance-none text-indigo-900 font-black text-xs sm:text-base"
               >
                 <option value="all">Show All</option>
                 {isPYQ ? EXAM_TYPES.map(e => (
@@ -424,8 +456,8 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
                   <option key={u} value={u}>{u}</option>
                 ))}
               </select>
-              <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
-                {isPYQ ? <History className="w-5 h-5 text-indigo-300" /> : <Layers className="w-5 h-5 text-indigo-300" />}
+              <div className="absolute right-4 sm:right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                {isPYQ ? <History className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-300" /> : <Layers className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-300" />}
               </div>
             </div>
           </div>
@@ -440,7 +472,7 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-black text-slate-800 tracking-tight">
+              <h3 className="text-base sm:text-lg font-black text-slate-800 tracking-tight">
                 {selectedTag === 'all' ? 'All Resources' : `Filter: ${selectedTag}`}
               </h3>
               <span className="bg-slate-200 text-slate-600 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
@@ -457,20 +489,20 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
               ))}
             </div>
           ) : files.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {files.map((file) => (
                 <div
                   key={file.id}
-                  className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center justify-between group hover:border-indigo-400 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+                  className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group hover:border-indigo-400 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="p-4 bg-slate-50 rounded-2xl text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-inner">
-                      <FileText className="w-6 h-6" />
+                  <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                    <div className="p-3 sm:p-4 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-inner shrink-0">
+                      <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
-                    <div className="overflow-hidden">
-                      <div className="flex flex-col gap-1.5 w-full">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-black text-slate-800 truncate text-base tracking-tight group-hover:text-indigo-600 transition-colors max-w-[200px] md:max-w-xs block">
+                    <div className="overflow-hidden flex-1">
+                      <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-black text-slate-800 truncate text-sm sm:text-base tracking-tight group-hover:text-indigo-600 transition-colors max-w-[170px] sm:max-w-xs block">
                             {file.file_name}
                           </h4>
                           {file.unit_no && (
@@ -479,43 +511,51 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 flex-wrap mt-1">
+                        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap mt-0.5 sm:mt-1">
                           <span className="px-2 py-0.5 bg-amber-50 text-amber-600 border border-amber-100 rounded-md text-[9px] font-black inline-flex items-center gap-1">
                             <Star className="w-2.5 h-2.5 fill-current" />
-                            {fileRatings[file.id] ? fileRatings[file.id].avg.toFixed(1) : "0.0"} ({fileRatings[file.id] ? fileRatings[file.id].count : 0} Reviews)
+                            {fileRatings[file.id] ? fileRatings[file.id].avg.toFixed(1) : "0.0"} ({fileRatings[file.id] ? fileRatings[file.id].count : 0})
                           </span>
                           <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-md text-[9px] font-black inline-flex items-center gap-1">
                             Accuracy: {fileRatings[file.id] ? ((fileRatings[file.id].avg / 5) * 100).toFixed(0) + "%" : "Not rated"}
                           </span>
                         </div>
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                          PDF • {new Date(file.uploaded_at).toLocaleDateString()}
-                        </p>
+                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5 flex items-center gap-1.5">
+                          {isGoogleDriveUrl(file.file_url) ? (
+                            <span className="text-emerald-600 font-bold flex items-center gap-1 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">
+                              <LinkIcon className="w-2.5 h-2.5" /> Drive Link
+                            </span>
+                          ) : (
+                            <span>PDF</span>
+                          )}
+                          <span>•</span>
+                          <span>{new Date(file.uploaded_at).toLocaleDateString()}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                     <button
                       onClick={() => handleView(file)}
-                      className="p-3 bg-slate-50 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-all shadow-sm border border-slate-100"
+                      className="p-2.5 sm:p-3 bg-slate-50 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-all shadow-sm border border-slate-100"
                       title="View PDF"
                     >
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
 
                     <button
                       onClick={() => handleDownload(file)}
-                      className={`p-3 rounded-xl transition-all shadow-lg flex items-center gap-2 ${actionStatus?.id === file.id && actionStatus.type === 'download'
+                      className={`p-2.5 sm:p-3 rounded-xl transition-all shadow-lg flex items-center gap-2 ${actionStatus?.id === file.id && actionStatus.type === 'download'
                           ? 'bg-emerald-500 text-white scale-110 shadow-emerald-200'
                           : 'bg-indigo-600 hover:bg-slate-900 text-white shadow-indigo-100'
                         }`}
                       title="Download PDF"
                     >
                       {actionStatus?.id === file.id && actionStatus.type === 'download' ? (
-                        <CheckCircle className="w-5 h-5 animate-in zoom-in duration-300" />
+                        <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 animate-in zoom-in duration-300" />
                       ) : (
-                        <Download className="w-5 h-5" />
+                        <Download className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </button>
                   </div>
@@ -523,19 +563,19 @@ const FileViewer: React.FC<FileViewerProps> = ({ user, category, onBack }) => {
               ))}
             </div>
           ) : (
-            <div className="bg-slate-100 rounded-[2.5rem] border-4 border-dashed border-white p-20 text-center">
-              <div className="bg-white w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl text-slate-200">
-                <FileText className="w-10 h-10" />
+            <div className="bg-slate-100 rounded-2xl sm:rounded-[2.5rem] border-4 border-dashed border-white p-10 sm:p-20 text-center">
+              <div className="bg-white w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-xl text-slate-200">
+                <FileText className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
-              <p className="text-slate-500 font-black text-xl tracking-tight">Empty Module</p>
-              <p className="text-slate-400 font-medium text-sm mt-1">No files found for the current selection.</p>
+              <p className="text-slate-500 font-black text-lg sm:text-xl tracking-tight">Empty Module</p>
+              <p className="text-slate-400 font-medium text-xs sm:text-sm mt-1">No files found for the current selection.</p>
             </div>
           )}
         </div>
       ) : (
-        <div className="bg-white/50 rounded-[2.5rem] border border-slate-200 border-dashed p-24 text-center">
-          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-100">
-            <Search className="w-10 h-10 text-slate-200" />
+        <div className="bg-white/50 rounded-2xl sm:rounded-[2.5rem] border border-slate-200 border-dashed p-12 sm:p-24 text-center">
+          <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 shadow-inner border border-slate-100">
+            <Search className="w-8 h-8 sm:w-10 sm:h-10 text-slate-200" />
           </div>
           <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-xs">Awaiting Subject Selection</p>
         </div>

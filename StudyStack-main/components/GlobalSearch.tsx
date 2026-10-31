@@ -139,10 +139,10 @@ const GlobalSearch: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto mb-8" ref={searchRef}>
+    <div className="relative w-full max-w-2xl mx-auto mb-4 sm:mb-8" ref={searchRef}>
       <div className="relative group">
-        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <Search className={`w-5 h-5 transition-colors ${query ? 'text-indigo-600' : 'text-slate-400'}`} />
+        <div className="absolute inset-y-0 left-0 pl-3.5 sm:pl-4 flex items-center pointer-events-none">
+          <Search className={`w-4 h-4 sm:w-5 sm:h-5 transition-colors ${query ? 'text-indigo-600' : 'text-slate-400'}`} />
         </div>
         <input
           type="text"
@@ -150,14 +150,14 @@ const GlobalSearch: React.FC = () => {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setIsOpen(true)}
           placeholder="Search subjects, categories, or resources..."
-          className="w-full pl-12 pr-12 py-4 bg-white border-2 border-slate-100 rounded-2xl shadow-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none font-bold text-slate-800 placeholder:text-slate-400"
+          className="w-full pl-10 pr-10 sm:pl-12 sm:pr-12 py-3 sm:py-4 bg-white border-2 border-slate-100 rounded-xl sm:rounded-2xl shadow-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none font-bold text-xs sm:text-base text-slate-800 placeholder:text-slate-400 truncate"
         />
         {query && (
           <button
             onClick={() => { setQuery(''); setResults([]); }}
-            className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+            className="absolute inset-y-0 right-0 pr-3.5 sm:pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         )}
       </div>

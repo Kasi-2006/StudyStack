@@ -23,7 +23,7 @@ async function testConnection() {
     const { data, error } = await supabase.from('profiles').select('*').limit(1);
     
     if (error) {
-      console.error('Connection failed! Error:', error.message);
+      console.error('Connection response:', error.message);
       console.error('Details:', error.details || error.hint || error);
     } else {
       console.log('Connection successful! Data:', data);
